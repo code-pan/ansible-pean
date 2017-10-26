@@ -1,0 +1,11 @@
+wixed_user: wixed
+wixed_dir: wixed-backend
+postgresql_databases:
+  - name: wixed
+postgresql_users:
+  - name: wixed
+    password: supersecure
+db_user: wixed
+db_pass: supersecure
+db_name: wixed
+server_name: 159.89.10.139

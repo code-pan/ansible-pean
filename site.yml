@@ -1,0 +1,70 @@
+
+---
+- name: Install Postgre, nodeJs, Nginx, redis and pm2 
+  hosts: all
+  remote_user: root
+  # remote_user: user
+  become: yes
+  become_method: sudo
+  vars_files:
+    - vars/main.yml
+  tasks:
+   - name: Add wixed user
+     user:
+      name: "{{wixed_user}}"
+      shell: /bin/bash
+
+   - name: Ensures /home/{{wixed_user}}/.ssh dir exists before copying the public key
+     file: path=/home/{{wixed_user}}/.ssh state=directory
+   - name: Copy authorizedkeys from root to user
+     copy:
+      src: "/root/.ssh/authorized_keys"
+      dest: /home/{{wixed_user}}/.ssh/authorized_keys
+      remote_src: yes
+
+   - name: Ensures /home/{{wixed_user}}/{{wixed_dir}} directory exists
+     file: path=/home/{{wixed_user}}/{{wixed_dir}} state=directory owner={{wixed_user}}
+     become_user: "{{wixed_user}}"
+   - name: Copy config file
+     become_user: "{{wixed_user}}"
+     template:
+      src: "server.config.js"
+      dest: /home/{{wixed_user}}/{{wixed_dir}}
+      mode: 0775
+
+   - name: init git repo
+     command: git init
+     become_user: "{{wixed_user}}"
+     args:
+       chdir: /home/{{wixed_user}}/{{wixed_dir}}
+
+   - name: set repo to accept push 
+     command: git config receive.denyCurrentBranch updateInstead
+     args:
+       chdir: /home/{{wixed_user}}/{{wixed_dir}}
+   - name: Copy git hook file
+     become_user: "{{wixed_user}}"
+     template:
+      src: "post-update"
+      dest: /home/{{wixed_user}}/{{wixed_dir}}/.git/hooks
+      mode: 0755
+   - name: Copy nginx conf
+     template:
+      src: "customNgnixConf"
+      dest: /etc/nginx/sites-enabled
+   - name: restart nginx 
+     command: service nginx restart
+
+  roles:
+    - role: franklinkim.environment
+      environment_config:
+        DATABASE_URL: postgres://{{db_user}}:{{db_pass}}@localhost/{{db_name}}
+    - geerlingguy.nodejs
+    - geerlingguy.nginx
+    - geerlingguy.postgresql
+    - geerlingguy.redis
+    - weareinteractive.pm2
+  vars:
+    pm2_service_name: pm2-root
+    pm2_apps_default_env:
+      NODE_ENV: production
