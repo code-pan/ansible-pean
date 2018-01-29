@@ -1,4 +1,4 @@
-# Installs wixed infrustructure in a single server
+# Installs nodejs app infrustructure in a single server
 
 ## Requirements
 install ansible in local machine.  
@@ -26,4 +26,4 @@ in this case also replace in the file ./roles/geerlingguy.postgresql/defaults/ma
 ## deploy
 push the branch to the server as the user you created
 
-    git push wixed_user@server:wixed_directory master
+    git push app_user@server:app_directory master

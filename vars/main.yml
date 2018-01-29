@@ -1,5 +1,5 @@
-wixed_user: wixed
-wixed_dir: wixed-backend
+app_user: wixed
+app_dir: wixed-backend
 postgresql_databases:
   - name: wixed
 postgresql_users:
@@ -9,3 +9,4 @@ db_user: wixed
 db_pass: supersecure
 db_name: wixed
 server_name: 159.89.10.139
+app_url: 'http://demo.wixeducation.com'

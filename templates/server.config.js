@@ -5,9 +5,9 @@
  */
 module.exports = {
   apps: [{
-    name: 'wixed-demo-backend',
+    name: 'app-server',
     script: './src/server.js',
-    cwd: '/home/{{wixed_user}}/{{wixed_dir}}/',
+    cwd: '/home/{{app_user}}/{{app_dir}}/',
     env: {
       APP_MODES: 'admin,user',
       DATABASE_URL: 'postgres://{{db_user}}:{{db_pass}}@localhost/{{db_name}}',
@@ -22,7 +22,7 @@ module.exports = {
       GOOGLE_PUBLIC_KEY: 'XXX',
       GOOGLE_SERVER_KEY: 'XXX',
       NODE_ENV: 'XXX',
-      NODE_URL: ':http://wixeducation.com',
+      NODE_URL: '{{app_url}}',
       PORT: 5000,
       //REDIS_URL: '',
       S3_ACCESS_KEY: 'XXX',
